@@ -11,11 +11,13 @@ import { CompressPdfTool } from './components/tools/CompressPdfTool';
 import { ToolMode, FileItem } from './types';
 import { Eye, WifiOff } from 'lucide-react';
 import { useOnlineStatus } from './hooks/usePWAInstall';
+import logoUrl from './assets/logo.png';
 
 const MainLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isOnline = useOnlineStatus();
+  const [footerLogoError, setFooterLogoError] = useState(false);
 
   // Map route to ToolMode
   const getModeFromPath = (path: string): ToolMode => {
@@ -121,12 +123,17 @@ const MainLayout: React.FC = () => {
       <footer className="border-t border-neutral-200 bg-white mt-auto py-5 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-neutral-500">
           <div className="flex items-center gap-2.5">
-            <img
-              src="/logo.png"
-              alt="BlackEYE Brand Logo"
-              className="w-6 h-6 object-contain shrink-0"
-              referrerPolicy="no-referrer"
-            />
+            {!footerLogoError ? (
+              <img
+                src={logoUrl}
+                alt="BlackEYE Brand Logo"
+                className="w-6 h-6 object-contain shrink-0"
+                referrerPolicy="no-referrer"
+                onError={() => setFooterLogoError(true)}
+              />
+            ) : (
+              <Eye className="w-5 h-5 text-orange-500 shrink-0" />
+            )}
             <span className="font-bold text-black">BlackEYE</span>
             <span>//</span>
             <span>PDF Converter Suite</span>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { usePWAInstall, useOnlineStatus } from '../hooks/usePWAInstall';
 import { ToolMode } from '../types';
 import { Eye, Shield, Download, Wifi, WifiOff, FileText, Image, Layers, Lock, Cpu } from 'lucide-react';
+import logoUrl from '../assets/logo.png';
 
 interface HeaderProps {
   currentMode: ToolMode;
@@ -16,6 +17,7 @@ export const Header: React.FC<HeaderProps> = ({
   const { isInstallable, isInstalled, isIOS, install } = usePWAInstall();
   const isOnline = useOnlineStatus();
   const [showIOSGuide, setShowIOSGuide] = useState(false);
+  const [logoError, setLogoError] = useState(false);
 
   const tools: { id: ToolMode; label: string; tag: string; icon: React.ComponentType<{ className?: string }> }[] = [
     { id: 'image-to-pdf', label: 'IMAGE TO PDF', tag: '01', icon: Image },
@@ -30,12 +32,19 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         {/* Brand & Identity */}
         <div className="flex items-center gap-3 sm:gap-4">
-          <img
-            src="/logo.png"
-            alt="BlackEYE Brand Logo"
-            className="w-9 h-9 sm:w-10 sm:h-10 object-contain shrink-0"
-            referrerPolicy="no-referrer"
-          />
+          {!logoError ? (
+            <img
+              src={logoUrl}
+              alt="BlackEYE Brand Logo"
+              className="w-9 h-9 sm:w-10 sm:h-10 object-contain shrink-0"
+              referrerPolicy="no-referrer"
+              onError={() => setLogoError(true)}
+            />
+          ) : (
+            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-neutral-900 rounded flex items-center justify-center shrink-0 shadow-xs border border-neutral-700">
+              <Eye className="w-5 h-5 text-orange-500" />
+            </div>
+          )}
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-lg sm:text-xl font-bold tracking-tight text-black font-mono">
