@@ -6,8 +6,8 @@ import {VitePWA} from 'vite-plugin-pwa';
 
 export default defineConfig(() => {
   return {
-    // Relative base allows seamless hosting on GitHub Pages subpaths (e.g. /blackeye-pdf/) or root domain
-    base: process.env.VITE_BASE_URL || './',
+    // Supports GitHub Pages subpath (/secure-pdf-converter/) or relative fallback
+    base: process.env.VITE_BASE_URL || (process.env.GITHUB_ACTIONS ? '/secure-pdf-converter/' : './'),
     plugins: [
       react(),
       tailwindcss(),
