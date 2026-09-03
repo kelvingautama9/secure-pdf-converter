@@ -6,8 +6,8 @@ import {VitePWA} from 'vite-plugin-pwa';
 
 export default defineConfig(() => {
   return {
-    // Supports GitHub Pages subpath (/secure-pdf-converter/) or relative fallback
-    base: process.env.VITE_BASE_URL || (process.env.GITHUB_ACTIONS ? '/secure-pdf-converter/' : './'),
+    // Relative base ensures assets load correctly on any GitHub Pages subpath, custom domain, or local preview
+    base: process.env.VITE_BASE_URL || './',
     plugins: [
       react(),
       tailwindcss(),
