@@ -1,0 +1,6 @@
+{
+  "name": "BlackEYE - PDF Converter",
+  "description": "100% Client-Side PDF Converter & Processing Suite. Convert Images to PDF, Merge & Split, Protect & Unlock, and Compress PDF directly in your browser with zero server uploads.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

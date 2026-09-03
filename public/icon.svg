@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" fill="#0A0A0A"/>
+  <!-- Industrial Outer Reticle -->
+  <rect x="24" y="24" width="464" height="464" fill="none" stroke="#262626" stroke-width="4"/>
+  <!-- Corner Tech Accents -->
+  <path d="M24 64 V24 H64 M448 24 H488 V64 M488 448 V488 H448 M64 488 H24 V448" fill="none" stroke="#EA580C" stroke-width="8"/>
+  
+  <!-- Stylized Cyber Eye -->
+  <g transform="translate(0, 0)">
+    <!-- Eye Contour -->
+    <path d="M60 256 C 140 130, 372 130, 452 256 C 372 382, 140 382, 60 256 Z" 
+          fill="#171717" stroke="#EA580C" stroke-width="16" stroke-linejoin="round"/>
+    <!-- Outer Iris -->
+    <circle cx="256" cy="256" r="86" fill="#0A0A0A" stroke="#FFFFFF" stroke-width="10"/>
+    <!-- Inner Iris -->
+    <circle cx="256" cy="256" r="48" fill="#EA580C"/>
+    <!-- Core Pupil -->
+    <circle cx="256" cy="256" r="24" fill="#0A0A0A"/>
+    <circle cx="270" cy="242" r="8" fill="#FFFFFF"/>
+    <!-- Cyber crosshairs -->
+    <line x1="120" y1="256" x2="160" y2="256" stroke="#EA580C" stroke-width="6"/>
+    <line x1="352" y1="256" x2="392" y2="256" stroke="#EA580C" stroke-width="6"/>
+    <line x1="256" y1="140" x2="256" y2="170" stroke="#EA580C" stroke-width="6"/>
+    <line x1="256" y1="342" x2="256" y2="372" stroke="#EA580C" stroke-width="6"/>
+  </g>
+</svg>
