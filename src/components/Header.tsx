@@ -61,13 +61,6 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Right Actions: Compact and Minimal */}
         <div className="flex items-center gap-2 shrink-0">
-          {/* Privacy Badge (Clean pill) */}
-          <div className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-semibold">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span className="hidden sm:inline">100% Client-Side</span>
-            <span className="sm:hidden">Local</span>
-          </div>
-
           {/* Offline indicator if disconnected */}
           {!isOnline && (
             <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-medium">

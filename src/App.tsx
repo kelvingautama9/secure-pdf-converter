@@ -86,7 +86,7 @@ const MainLayout: React.FC = () => {
             {/* Main Workspace Container */}
             <div className="bg-white border border-neutral-200/90 rounded-2xl flex flex-col overflow-hidden shadow-xs">
               {/* Workspace Header Strip */}
-              <div className="px-4 py-3 sm:px-6 sm:py-4 flex items-center justify-between gap-3 border-b border-neutral-100 bg-white">
+              <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-neutral-100 bg-white">
                 <div className="min-w-0">
                   <h2 className="text-sm sm:text-base font-bold text-neutral-950 font-mono flex items-center gap-1.5 truncate">
                     <span>Tool:</span>
@@ -95,12 +95,6 @@ const MainLayout: React.FC = () => {
                   <p className="text-[11px] sm:text-xs text-neutral-500 mt-0.5 truncate hidden sm:block">
                     {toolDetails[currentMode].subtitle}
                   </p>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <div className="px-2.5 py-1 bg-emerald-50 border border-emerald-200 rounded-full text-[10px] sm:text-[11px] text-emerald-700 font-semibold flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    <span>Local Sandbox</span>
-                  </div>
                 </div>
               </div>
 
@@ -115,17 +109,6 @@ const MainLayout: React.FC = () => {
                   <Route path="*" element={<ImageToPdfTool />} />
                 </Routes>
               </div>
-            </div>
-
-            {/* Mobile-only Bottom Privacy Note (Under the entire tool workspace, never blocking uploads) */}
-            <div className="lg:hidden bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-3 shadow-xs flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2 text-[11px] text-emerald-950 font-mono">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
-                <span>Zero server upload • 100% in-browser processing</span>
-              </div>
-              <span className="text-[10px] font-bold text-emerald-800 uppercase px-2 py-0.5 bg-emerald-100 rounded">
-                SECURE
-              </span>
             </div>
           </div>
         </div>

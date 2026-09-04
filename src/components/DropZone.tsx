@@ -123,10 +123,6 @@ export const DropZone: React.FC<DropZoneProps> = ({
             <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 border border-neutral-200 bg-white text-neutral-700 rounded font-medium">
               FORMAT: {acceptLabel}
             </span>
-            <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 border border-emerald-200 bg-emerald-50 text-emerald-700 rounded font-semibold flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              CLIENT ONLY
-            </span>
           </div>
           <span className="font-bold text-orange-600">
             {files.length} {files.length === 1 ? 'FILE READY' : 'FILES READY'}
