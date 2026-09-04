@@ -3,6 +3,7 @@ import { DropZone } from '../DropZone';
 import { FileItem, ImageToPdfOptions, ProgressState } from '../../types';
 import { imageToPdf, downloadBlob, formatBytes } from '../../utils/pdfServices';
 import { Download, Play, CheckCircle2, AlertCircle, RefreshCw, Settings2, Cpu, Sliders } from 'lucide-react';
+import { haptic } from '../../utils/haptics';
 
 export const ImageToPdfTool: React.FC = () => {
   const [files, setFiles] = useState<FileItem[]>([]);
@@ -67,6 +68,7 @@ export const ImageToPdfTool: React.FC = () => {
   const handleConvert = async () => {
     if (files.length === 0) return;
 
+    haptic.medium();
     setProgress({
       isProcessing: true,
       progress: 0,
@@ -99,6 +101,7 @@ export const ImageToPdfTool: React.FC = () => {
       const firstFileName = files[0].name.replace(/\.[^/.]+$/, '');
       const outName = files.length === 1 ? `${firstFileName}.pdf` : `BlackEYE_${files.length}_images.pdf`;
 
+      haptic.success();
       setProgress((prev) => ({
         ...prev,
         isProcessing: false,
@@ -109,6 +112,7 @@ export const ImageToPdfTool: React.FC = () => {
         resultSize: blob.size,
       }));
     } catch (err: unknown) {
+      haptic.error();
       setProgress((prev) => ({
         ...prev,
         isProcessing: false,
@@ -365,7 +369,7 @@ export const ImageToPdfTool: React.FC = () => {
             type="button"
             onClick={handleConvert}
             disabled={files.length === 0 || progress.isProcessing}
-            className="px-6 py-2.5 bg-orange-600 text-white text-xs font-mono font-bold rounded-lg hover:bg-orange-700 active:translate-y-0.5 disabled:opacity-40 disabled:pointer-events-none transition shadow-xs flex items-center gap-2 uppercase tracking-wide cursor-pointer"
+            className="w-full sm:w-auto px-6 py-2.5 bg-orange-600 text-white text-xs font-mono font-bold rounded-lg hover:bg-orange-700 active:scale-95 disabled:opacity-40 disabled:pointer-events-none transition shadow-xs flex items-center justify-center gap-2 uppercase tracking-wide cursor-pointer"
           >
             {progress.isProcessing ? (
               <>
@@ -414,8 +418,8 @@ export const ImageToPdfTool: React.FC = () => {
 
       {/* Download Success Banner (Green) */}
       {progress.resultBlob && (
-        <div className="bg-green-50 border border-green-200 rounded-xl p-5 shadow-xs text-green-900 font-mono">
-          <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="bg-green-50 border border-green-200 rounded-xl p-4 sm:p-5 shadow-xs text-green-900 font-mono">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-5 h-5 text-green-600 shrink-0" />
@@ -429,7 +433,7 @@ export const ImageToPdfTool: React.FC = () => {
                 )}
               </div>
 
-              <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-600 pt-1">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-neutral-600 pt-1">
                 <span>
                   Original Images: <strong className="text-black">{formatBytes(progress.originalTotalSize || 0)}</strong>
                 </span>
@@ -448,11 +452,12 @@ export const ImageToPdfTool: React.FC = () => {
             <button
               type="button"
               onClick={() => {
+                haptic.success();
                 if (progress.resultBlob && progress.resultFileName) {
                   downloadBlob(progress.resultBlob, progress.resultFileName);
                 }
               }}
-              className="px-5 py-2.5 bg-green-600 text-white text-xs font-bold rounded-lg hover:bg-green-700 transition shadow-xs flex items-center gap-2 uppercase tracking-wide cursor-pointer"
+              className="w-full sm:w-auto px-5 py-2.5 bg-green-600 text-white text-xs font-bold rounded-lg hover:bg-green-700 active:scale-95 transition shadow-xs flex items-center justify-center gap-2 uppercase tracking-wide cursor-pointer"
             >
               <Download className="w-3.5 h-3.5" />
               <span>DOWNLOAD PDF</span>

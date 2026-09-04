@@ -2,6 +2,7 @@ import React from 'react';
 import { ToolMode, FileItem } from '../types';
 import { ShieldCheck, HardDrive, Layers, Image, Lock, Cpu } from 'lucide-react';
 import { formatBytes } from '../utils/pdfServices';
+import { haptic } from '../utils/haptics';
 
 interface SidebarStatusProps {
   currentMode: ToolMode;
@@ -43,7 +44,10 @@ export const SidebarStatus: React.FC<SidebarStatusProps> = ({
               <button
                 key={tool.id}
                 type="button"
-                onClick={() => onSelectMode && onSelectMode(tool.id)}
+                onClick={() => {
+                  haptic.selection();
+                  if (onSelectMode) onSelectMode(tool.id);
+                }}
                 className={`w-full text-left p-3 rounded-lg text-xs font-bold flex items-center justify-between transition cursor-pointer ${
                   isActive
                     ? 'bg-orange-600 text-white shadow-xs'

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { DropZone } from '../DropZone';
 import { FileItem, CompressOptions, ProgressState } from '../../types';
 import { compressPdf, downloadBlob, formatBytes } from '../../utils/pdfServices';
+import { haptic } from '../../utils/haptics';
 import {
   Cpu,
   Download,
@@ -67,6 +68,7 @@ export const CompressPdfTool: React.FC = () => {
   };
 
   const handlePresetSelect = (selected: 'extreme' | 'recommended' | 'light') => {
+    haptic.selection();
     setPreset(selected);
     if (selected === 'extreme') {
       setCustomQuality(0.35);
@@ -84,6 +86,7 @@ export const CompressPdfTool: React.FC = () => {
     if (files.length === 0) return;
     const targetFile = files[0].file;
 
+    haptic.medium();
     setProgress({
       isProcessing: true,
       progress: 0,
@@ -110,6 +113,7 @@ export const CompressPdfTool: React.FC = () => {
       const outName = targetFile.name.replace(/\.pdf$/i, '_compressed.pdf');
 
       setSavingsPercent(result.savingsPercent);
+      haptic.success();
       setProgress((prev) => ({
         ...prev,
         isProcessing: false,
@@ -120,6 +124,7 @@ export const CompressPdfTool: React.FC = () => {
         resultSize: result.compressedSize,
       }));
     } catch (err: unknown) {
+      haptic.error();
       setProgress((prev) => ({
         ...prev,
         isProcessing: false,
@@ -258,8 +263,8 @@ export const CompressPdfTool: React.FC = () => {
         )}
 
         {/* Action Button */}
-        <div className="mt-5 pt-4 border-t border-neutral-100 flex flex-wrap items-center justify-between gap-3">
-          <div className="text-xs font-mono text-neutral-500">
+        <div className="mt-5 pt-4 border-t border-neutral-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="text-xs font-mono text-neutral-500 text-center sm:text-left">
             {files.length > 0
               ? `Target: ${files[0].name} (${formatBytes(files[0].size)})`
               : 'Select a PDF document to optimize'}
@@ -269,7 +274,7 @@ export const CompressPdfTool: React.FC = () => {
             type="button"
             onClick={handleCompress}
             disabled={files.length === 0 || progress.isProcessing}
-            className="px-6 py-2.5 bg-orange-600 text-white text-xs font-mono font-bold rounded-lg hover:bg-orange-700 active:translate-y-0.5 disabled:opacity-40 disabled:pointer-events-none transition shadow-xs flex items-center gap-2 uppercase tracking-wide cursor-pointer"
+            className="w-full sm:w-auto px-6 py-2.5 bg-orange-600 text-white text-xs font-mono font-bold rounded-lg hover:bg-orange-700 active:scale-95 disabled:opacity-40 disabled:pointer-events-none transition shadow-xs flex items-center justify-center gap-2 uppercase tracking-wide cursor-pointer"
           >
             {progress.isProcessing ? (
               <>
@@ -318,8 +323,8 @@ export const CompressPdfTool: React.FC = () => {
 
       {/* Savings & Download Banner */}
       {progress.resultBlob && (
-        <div className="bg-green-50 border border-green-200 rounded-xl p-5 shadow-xs text-green-900 font-mono">
-          <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="bg-green-50 border border-green-200 rounded-xl p-4 sm:p-5 shadow-xs text-green-900 font-mono">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-5 h-5 text-green-600 shrink-0" />
@@ -352,11 +357,12 @@ export const CompressPdfTool: React.FC = () => {
             <button
               type="button"
               onClick={() => {
+                haptic.success();
                 if (progress.resultBlob && progress.resultFileName) {
                   downloadBlob(progress.resultBlob, progress.resultFileName);
                 }
               }}
-              className="px-5 py-2.5 bg-green-600 text-white text-xs font-bold rounded-lg hover:bg-green-700 transition shadow-xs flex items-center gap-2 uppercase tracking-wide cursor-pointer"
+              className="w-full sm:w-auto px-5 py-2.5 bg-green-600 text-white text-xs font-bold rounded-lg hover:bg-green-700 active:scale-95 transition shadow-xs flex items-center justify-center gap-2 uppercase tracking-wide cursor-pointer"
             >
               <Download className="w-3.5 h-3.5" />
               <span>DOWNLOAD OPTIMIZED PDF</span>

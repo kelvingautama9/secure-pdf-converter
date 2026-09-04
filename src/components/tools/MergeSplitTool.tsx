@@ -8,6 +8,7 @@ import {
   formatBytes,
   getPdfPageCount,
 } from '../../utils/pdfServices';
+import { haptic } from '../../utils/haptics';
 import {
   Layers,
   Scissors,
@@ -90,6 +91,7 @@ export const MergeSplitTool: React.FC = () => {
   const handleExecute = async () => {
     if (files.length === 0) return;
 
+    haptic.medium();
     setProgress({
       isProcessing: true,
       progress: 0,
@@ -114,6 +116,7 @@ export const MergeSplitTool: React.FC = () => {
         const blob = new Blob([mergedBytes], { type: 'application/pdf' });
         const outName = `BlackEYE_Merged_${files.length}_docs.pdf`;
 
+        haptic.success();
         setProgress((prev) => ({
           ...prev,
           isProcessing: false,
@@ -131,6 +134,7 @@ export const MergeSplitTool: React.FC = () => {
         });
 
         setSplitResults(results);
+        haptic.success();
 
         if (results.length === 1) {
           setProgress((prev) => ({
@@ -152,6 +156,7 @@ export const MergeSplitTool: React.FC = () => {
         }
       }
     } catch (err: unknown) {
+      haptic.error();
       setProgress((prev) => ({
         ...prev,
         isProcessing: false,
@@ -167,6 +172,7 @@ export const MergeSplitTool: React.FC = () => {
         <button
           type="button"
           onClick={() => {
+            haptic.selection();
             setSubTab('merge');
             setProgress((p) => ({ ...p, resultBlob: null, error: null }));
             setSplitResults([]);
@@ -184,6 +190,7 @@ export const MergeSplitTool: React.FC = () => {
         <button
           type="button"
           onClick={() => {
+            haptic.selection();
             setSubTab('split');
             if (files.length > 1) setFiles([files[0]]);
             setProgress((p) => ({ ...p, resultBlob: null, error: null }));
@@ -284,7 +291,7 @@ export const MergeSplitTool: React.FC = () => {
             progress.isProcessing ||
             (subTab === 'merge' ? files.length < 2 : files.length === 0)
           }
-          className="px-6 py-2.5 bg-orange-600 text-white text-xs font-mono font-bold rounded-lg hover:bg-orange-700 active:translate-y-0.5 disabled:opacity-40 disabled:pointer-events-none transition shadow-xs flex items-center gap-2 uppercase tracking-wide cursor-pointer"
+          className="w-full sm:w-auto px-6 py-2.5 bg-orange-600 text-white text-xs font-mono font-bold rounded-lg hover:bg-orange-700 active:scale-95 disabled:opacity-40 disabled:pointer-events-none transition shadow-xs flex items-center justify-center gap-2 uppercase tracking-wide cursor-pointer"
         >
           {progress.isProcessing ? (
             <>
@@ -332,8 +339,8 @@ export const MergeSplitTool: React.FC = () => {
 
       {/* Single Result Download (Green) */}
       {progress.resultBlob && (
-        <div className="bg-green-50 border border-green-200 rounded-xl p-5 shadow-xs text-green-900 font-mono">
-          <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="bg-green-50 border border-green-200 rounded-xl p-4 sm:p-5 shadow-xs text-green-900 font-mono">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <CheckCircle2 className="w-6 h-6 text-green-600 shrink-0" />
               <div>
@@ -349,11 +356,12 @@ export const MergeSplitTool: React.FC = () => {
             <button
               type="button"
               onClick={() => {
+                haptic.success();
                 if (progress.resultBlob && progress.resultFileName) {
                   downloadBlob(progress.resultBlob, progress.resultFileName);
                 }
               }}
-              className="px-5 py-2.5 bg-green-600 text-white text-xs font-bold rounded-lg hover:bg-green-700 transition shadow-xs flex items-center gap-2 uppercase tracking-wide cursor-pointer"
+              className="w-full sm:w-auto px-5 py-2.5 bg-green-600 text-white text-xs font-bold rounded-lg hover:bg-green-700 active:scale-95 transition shadow-xs flex items-center justify-center gap-2 uppercase tracking-wide cursor-pointer"
             >
               <Download className="w-3.5 h-3.5" />
               <span>DOWNLOAD PDF</span>
@@ -372,6 +380,7 @@ export const MergeSplitTool: React.FC = () => {
             <button
               type="button"
               onClick={() => {
+                haptic.success();
                 splitResults.forEach((res, i) => {
                   setTimeout(() => downloadBlob(res.blob, res.fileName), i * 200);
                 });
@@ -396,8 +405,11 @@ export const MergeSplitTool: React.FC = () => {
                 </div>
                 <button
                   type="button"
-                  onClick={() => downloadBlob(item.blob, item.fileName)}
-                  className="px-3 py-1.5 bg-green-600 text-white text-[10px] font-bold rounded-md shrink-0 hover:bg-green-700 transition cursor-pointer"
+                  onClick={() => {
+                    haptic.success();
+                    downloadBlob(item.blob, item.fileName);
+                  }}
+                  className="px-3 py-1.5 bg-green-600 text-white text-[10px] font-bold rounded-md shrink-0 hover:bg-green-700 active:scale-95 transition cursor-pointer"
                 >
                   SAVE
                 </button>

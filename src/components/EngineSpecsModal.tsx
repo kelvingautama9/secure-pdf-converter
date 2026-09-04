@@ -1,5 +1,6 @@
 import React from 'react';
-import { X, Shield, Terminal, HardDrive, Globe, CheckCircle, Cpu } from 'lucide-react';
+import { X, Shield, Terminal, HardDrive, Globe, CheckCircle } from 'lucide-react';
+import logoUrl from '../assets/logo.png';
 
 interface EngineSpecsModalProps {
   isOpen: boolean;
@@ -17,8 +18,8 @@ export const EngineSpecsModal: React.FC<EngineSpecsModalProps> = ({
       <div className="bg-[#141414] border border-[#262626] rounded-xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl text-[#e5e5e5] overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-4 bg-[#1a1a1a] text-white border-b border-[#262626]">
-          <div className="flex items-center gap-2">
-            <Cpu className="w-4 h-4 text-yellow-400" />
+          <div className="flex items-center gap-2.5">
+            <img src={logoUrl} alt="BlackEYE" className="w-5 h-5 object-contain shrink-0" />
             <span className="text-xs font-bold uppercase tracking-wider text-white">
               BLACKEYE ENGINE ARCHITECTURE & SECURITY SPECIFICATION
             </span>

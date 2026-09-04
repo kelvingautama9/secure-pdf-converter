@@ -8,6 +8,7 @@ import {
   formatBytes,
   checkPdfIsEncrypted,
 } from '../../utils/pdfServices';
+import { haptic } from '../../utils/haptics';
 import {
   Lock,
   Unlock,
@@ -83,6 +84,7 @@ export const ProtectUnlockTool: React.FC = () => {
     const targetFile = files[0].file;
 
     if (!password && (mode === 'protect' || isDetectedEncrypted)) {
+      haptic.error();
       setProgress((p) => ({
         ...p,
         error: 'Please enter a password to proceed.',
@@ -90,6 +92,7 @@ export const ProtectUnlockTool: React.FC = () => {
       return;
     }
 
+    haptic.medium();
     setProgress({
       isProcessing: true,
       progress: 0,
@@ -119,6 +122,7 @@ export const ProtectUnlockTool: React.FC = () => {
         const blob = new Blob([encryptedBytes], { type: 'application/pdf' });
         const outName = targetFile.name.replace(/\.pdf$/i, '_protected.pdf');
 
+        haptic.success();
         setProgress((prev) => ({
           ...prev,
           isProcessing: false,
@@ -137,6 +141,7 @@ export const ProtectUnlockTool: React.FC = () => {
         const blob = new Blob([decryptedBytes], { type: 'application/pdf' });
         const outName = targetFile.name.replace(/\.pdf$/i, '_unlocked.pdf');
 
+        haptic.success();
         setProgress((prev) => ({
           ...prev,
           isProcessing: false,
@@ -148,6 +153,7 @@ export const ProtectUnlockTool: React.FC = () => {
         }));
       }
     } catch (err: unknown) {
+      haptic.error();
       setProgress((prev) => ({
         ...prev,
         isProcessing: false,
@@ -163,6 +169,7 @@ export const ProtectUnlockTool: React.FC = () => {
         <button
           type="button"
           onClick={() => {
+            haptic.selection();
             setMode('protect');
             setProgress((p) => ({ ...p, resultBlob: null, error: null }));
           }}
@@ -179,6 +186,7 @@ export const ProtectUnlockTool: React.FC = () => {
         <button
           type="button"
           onClick={() => {
+            haptic.selection();
             setMode('unlock');
             setProgress((p) => ({ ...p, resultBlob: null, error: null }));
           }}
@@ -314,8 +322,8 @@ export const ProtectUnlockTool: React.FC = () => {
       )}
 
       {/* Action Trigger */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-        <div className="text-xs font-mono text-neutral-500">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+        <div className="text-xs font-mono text-neutral-500 text-center sm:text-left">
           {files.length > 0
             ? mode === 'protect'
               ? 'Ready to encrypt with AES-256'
@@ -327,7 +335,7 @@ export const ProtectUnlockTool: React.FC = () => {
           type="button"
           onClick={handleExecute}
           disabled={files.length === 0 || progress.isProcessing}
-          className="px-6 py-2.5 bg-orange-600 text-white text-xs font-mono font-bold rounded-lg hover:bg-orange-700 active:translate-y-0.5 disabled:opacity-40 disabled:pointer-events-none transition shadow-xs flex items-center gap-2 uppercase tracking-wide cursor-pointer"
+          className="w-full sm:w-auto px-6 py-2.5 bg-orange-600 text-white text-xs font-mono font-bold rounded-lg hover:bg-orange-700 active:scale-95 disabled:opacity-40 disabled:pointer-events-none transition shadow-xs flex items-center justify-center gap-2 uppercase tracking-wide cursor-pointer"
         >
           {progress.isProcessing ? (
             <>
@@ -375,8 +383,8 @@ export const ProtectUnlockTool: React.FC = () => {
 
       {/* Result Download (Green) */}
       {progress.resultBlob && (
-        <div className="bg-green-50 border border-green-200 rounded-xl p-5 shadow-xs text-green-900 font-mono">
-          <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="bg-green-50 border border-green-200 rounded-xl p-4 sm:p-5 shadow-xs text-green-900 font-mono">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <CheckCircle2 className="w-6 h-6 text-green-600 shrink-0" />
               <div>
@@ -392,11 +400,12 @@ export const ProtectUnlockTool: React.FC = () => {
             <button
               type="button"
               onClick={() => {
+                haptic.success();
                 if (progress.resultBlob && progress.resultFileName) {
                   downloadBlob(progress.resultBlob, progress.resultFileName);
                 }
               }}
-              className="px-5 py-2.5 bg-green-600 text-white text-xs font-bold rounded-lg hover:bg-green-700 transition shadow-xs flex items-center gap-2 uppercase tracking-wide cursor-pointer"
+              className="w-full sm:w-auto px-5 py-2.5 bg-green-600 text-white text-xs font-bold rounded-lg hover:bg-green-700 active:scale-95 transition shadow-xs flex items-center justify-center gap-2 uppercase tracking-wide cursor-pointer"
             >
               <Download className="w-3.5 h-3.5" />
               <span>DOWNLOAD PDF</span>

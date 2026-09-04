@@ -69,10 +69,10 @@ const MainLayout: React.FC = () => {
       />
 
       {/* Main Workspace Area (Clean 12-Col Grid) */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Left Column: Tools & Privacy (Cols 1 to 3) */}
-          <div className="lg:col-span-3">
+          {/* Left Column: Tools & Privacy (Desktop Only - hidden on mobile so uploads are immediately accessible) */}
+          <div className="hidden lg:block lg:col-span-3">
             <SidebarStatus
               currentMode={currentMode}
               onSelectMode={handleSelectMode}
@@ -81,30 +81,31 @@ const MainLayout: React.FC = () => {
             />
           </div>
 
-          {/* Right Column: Active Tool Workspace (Cols 4 to 12) */}
-          <div className="lg:col-span-9 flex flex-col gap-6">
+          {/* Main Column: Active Tool Workspace (Full width on mobile, Cols 4 to 12 on desktop) */}
+          <div className="w-full lg:col-span-9 flex flex-col gap-5">
             {/* Main Workspace Container */}
-            <div className="bg-white border border-neutral-200 rounded-2xl flex flex-col overflow-hidden shadow-xs">
+            <div className="bg-white border border-neutral-200/90 rounded-2xl flex flex-col overflow-hidden shadow-xs">
               {/* Workspace Header Strip */}
-              <div className="px-5 py-4 sm:px-6 sm:py-5 flex flex-wrap items-center justify-between gap-3 border-b border-neutral-100 bg-white">
-                <div>
-                  <h3 className="text-base sm:text-lg font-bold text-black font-mono">
-                    Workspace: <span className="text-orange-600">{toolDetails[currentMode].title}</span>
-                  </h3>
-                  <p className="text-xs text-neutral-500 mt-0.5">
+              <div className="px-4 py-3 sm:px-6 sm:py-4 flex items-center justify-between gap-3 border-b border-neutral-100 bg-white">
+                <div className="min-w-0">
+                  <h2 className="text-sm sm:text-base font-bold text-neutral-950 font-mono flex items-center gap-1.5 truncate">
+                    <span>Tool:</span>
+                    <span className="text-orange-600 font-extrabold">{toolDetails[currentMode].title}</span>
+                  </h2>
+                  <p className="text-[11px] sm:text-xs text-neutral-500 mt-0.5 truncate hidden sm:block">
                     {toolDetails[currentMode].subtitle}
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="px-3 py-1 bg-green-50 border border-green-200 rounded-full text-[11px] text-green-700 font-semibold flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                <div className="flex items-center gap-2 shrink-0">
+                  <div className="px-2.5 py-1 bg-emerald-50 border border-emerald-200 rounded-full text-[10px] sm:text-[11px] text-emerald-700 font-semibold flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                     <span>Local Sandbox</span>
                   </div>
                 </div>
               </div>
 
               {/* Active Tool View */}
-              <div className="p-4 sm:p-6 bg-white">
+              <div className="p-3 sm:p-6 bg-white">
                 <Routes>
                   <Route path="/" element={<ImageToPdfTool />} />
                   <Route path="/image-to-pdf" element={<ImageToPdfTool />} />
@@ -114,6 +115,17 @@ const MainLayout: React.FC = () => {
                   <Route path="*" element={<ImageToPdfTool />} />
                 </Routes>
               </div>
+            </div>
+
+            {/* Mobile-only Bottom Privacy Note (Under the entire tool workspace, never blocking uploads) */}
+            <div className="lg:hidden bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-3 shadow-xs flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 text-[11px] text-emerald-950 font-mono">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                <span>Zero server upload • 100% in-browser processing</span>
+              </div>
+              <span className="text-[10px] font-bold text-emerald-800 uppercase px-2 py-0.5 bg-emerald-100 rounded">
+                SECURE
+              </span>
             </div>
           </div>
         </div>

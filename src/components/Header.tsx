@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { usePWAInstall, useOnlineStatus } from '../hooks/usePWAInstall';
 import { ToolMode } from '../types';
-import { Eye, Shield, Download, Wifi, WifiOff, FileText, Image, Layers, Lock, Cpu } from 'lucide-react';
+import { Eye, Download, WifiOff, Image, Layers, Lock, Cpu } from 'lucide-react';
 import logoUrl from '../assets/logo.png';
+import { haptic } from '../utils/haptics';
 
 interface HeaderProps {
   currentMode: ToolMode;
@@ -19,101 +20,111 @@ export const Header: React.FC<HeaderProps> = ({
   const [showIOSGuide, setShowIOSGuide] = useState(false);
   const [logoError, setLogoError] = useState(false);
 
-  const tools: { id: ToolMode; label: string; tag: string; icon: React.ComponentType<{ className?: string }> }[] = [
-    { id: 'image-to-pdf', label: 'IMAGE TO PDF', tag: '01', icon: Image },
-    { id: 'merge-split', label: 'MERGE & SPLIT', tag: '02', icon: Layers },
-    { id: 'protect-unlock', label: 'PROTECT & UNLOCK', tag: '03', icon: Lock },
-    { id: 'compress-pdf', label: 'COMPRESS PDF', tag: '04', icon: Cpu },
+  const tools: { id: ToolMode; label: string; shortLabel: string; tag: string; icon: React.ComponentType<{ className?: string }> }[] = [
+    { id: 'image-to-pdf', label: 'IMAGE TO PDF', shortLabel: 'Image → PDF', tag: '01', icon: Image },
+    { id: 'merge-split', label: 'MERGE & SPLIT', shortLabel: 'Merge & Split', tag: '02', icon: Layers },
+    { id: 'protect-unlock', label: 'PROTECT & UNLOCK', shortLabel: 'Protect', tag: '03', icon: Lock },
+    { id: 'compress-pdf', label: 'COMPRESS PDF', shortLabel: 'Compress', tag: '04', icon: Cpu },
   ];
 
   return (
-    <header className="border-b border-neutral-200 bg-white sticky top-0 z-40 shadow-xs">
+    <header className="border-b border-neutral-200/80 bg-white sticky top-0 z-40 shadow-xs">
       {/* Top Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-        {/* Brand & Identity */}
-        <div className="flex items-center gap-3 sm:gap-4">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-3">
+        {/* Brand & Clean Mobile Title */}
+        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
           {!logoError ? (
             <img
               src={logoUrl}
               alt="BlackEYE Brand Logo"
-              className="w-9 h-9 sm:w-10 sm:h-10 object-contain shrink-0"
+              className="w-8 h-8 sm:w-10 sm:h-10 object-contain shrink-0"
               referrerPolicy="no-referrer"
               onError={() => setLogoError(true)}
             />
           ) : (
-            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-neutral-900 rounded flex items-center justify-center shrink-0 shadow-xs border border-neutral-700">
-              <Eye className="w-5 h-5 text-orange-500" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-neutral-950 rounded-lg flex items-center justify-center shrink-0 shadow-xs border border-neutral-800">
+              <Eye className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" />
             </div>
           )}
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg sm:text-xl font-bold tracking-tight text-black font-mono">
-                BlackEYE <span className="text-orange-600 font-semibold text-xs sm:text-sm">// PDF CONVERTER</span>
-              </h1>
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
+              <span className="text-base sm:text-lg font-black tracking-tight text-neutral-950 font-mono">
+                BlackEYE
+              </span>
+              <span className="text-neutral-300 font-mono text-xs">/</span>
+              <span className="text-[11px] sm:text-xs font-bold text-orange-600 font-mono tracking-wide">
+                PDF CONVERTER
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Right Actions: Clean and Minimal */}
-        <div className="flex items-center gap-3">
-          {/* Privacy Badge (Green) */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-50 border border-green-200 text-green-700 text-xs font-semibold">
-            <span className="w-2 h-2 rounded-full bg-green-500"></span>
-            <span className="hidden sm:inline">100% Client-Side Private</span>
-            <span className="sm:hidden">Private</span>
+        {/* Right Actions: Compact and Minimal */}
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Privacy Badge (Clean pill) */}
+          <div className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-semibold">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span className="hidden sm:inline">100% Client-Side</span>
+            <span className="sm:hidden">Local</span>
           </div>
 
           {/* Offline indicator if disconnected */}
           {!isOnline && (
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-medium">
-              <WifiOff className="w-3.5 h-3.5 text-amber-600" />
-              <span>Offline Mode</span>
+            <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-medium">
+              <WifiOff className="w-3 h-3 text-amber-600" />
+              <span className="hidden sm:inline">Offline</span>
             </div>
           )}
 
           {/* PWA Install Button (Orange) */}
           {isInstallable && (
             <button
-              onClick={install}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-bold bg-orange-600 text-white hover:bg-orange-700 transition shadow-xs cursor-pointer"
+              onClick={() => {
+                haptic.light();
+                install();
+              }}
+              className="flex items-center gap-1 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-[11px] font-mono font-bold bg-orange-600 text-white hover:bg-orange-700 active:scale-95 transition shadow-xs cursor-pointer"
             >
-              <Download className="w-3.5 h-3.5" />
+              <Download className="w-3 h-3" />
               <span>INSTALL</span>
             </button>
           )}
 
           {isIOS && !isInstalled && (
             <button
-              onClick={() => setShowIOSGuide(true)}
-              className="px-2.5 py-1 text-xs font-mono border border-neutral-300 rounded-lg bg-neutral-50 text-neutral-800 hover:bg-neutral-100"
+              onClick={() => {
+                haptic.light();
+                setShowIOSGuide(true);
+              }}
+              className="px-2 py-1 text-[11px] font-mono border border-neutral-300 rounded-lg bg-neutral-50 text-neutral-800 hover:bg-neutral-100 cursor-pointer"
             >
-              INSTALL ON iOS
+              + iOS
             </button>
           )}
         </div>
       </div>
 
-      {/* Navigation Tool Strip (Responsive Mobile & Tablet quick switcher) */}
-      <div className="border-t border-neutral-200 bg-neutral-50 lg:hidden">
-        <div className="max-w-7xl mx-auto px-4 flex overflow-x-auto no-scrollbar">
+      {/* Navigation Tool Strip (Ultra-Clean Mobile Segmented Switcher) */}
+      <div className="border-t border-neutral-200/80 bg-neutral-50/90 backdrop-blur-xs lg:hidden overflow-hidden">
+        <div className="max-w-7xl mx-auto px-2.5 py-1.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
           {tools.map((tool) => {
             const Icon = tool.icon;
             const isActive = currentMode === tool.id;
             return (
               <button
                 key={tool.id}
-                onClick={() => onSelectMode(tool.id)}
-                className={`flex items-center gap-2 px-3.5 py-2.5 text-xs font-mono font-semibold transition border-r border-neutral-200 whitespace-nowrap cursor-pointer ${
+                onClick={() => {
+                  haptic.selection();
+                  onSelectMode(tool.id);
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-bold rounded-lg transition-all whitespace-nowrap cursor-pointer shrink-0 ${
                   isActive
-                    ? 'bg-orange-600 text-white font-bold'
-                    : 'text-neutral-700 hover:bg-neutral-100 hover:text-black'
+                    ? 'bg-neutral-950 text-white shadow-xs'
+                    : 'bg-white text-neutral-600 hover:text-neutral-900 border border-neutral-200/70 hover:bg-neutral-100/80'
                 }`}
               >
-                <span className={`text-[10px] ${isActive ? 'text-white/80' : 'text-neutral-400'}`}>
-                  [{tool.tag}]
-                </span>
-                <Icon className="w-3.5 h-3.5" />
-                <span>{tool.label}</span>
+                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-orange-500' : 'text-neutral-400'}`} />
+                <span>{tool.shortLabel}</span>
               </button>
             );
           })}
@@ -134,7 +145,10 @@ export const Header: React.FC<HeaderProps> = ({
               3. The app executes 100% locally with zero server calls.
             </p>
             <button
-              onClick={() => setShowIOSGuide(false)}
+              onClick={() => {
+                haptic.light();
+                setShowIOSGuide(false);
+              }}
               className="mt-5 w-full py-2 bg-black text-white text-xs font-mono font-bold rounded-lg hover:bg-neutral-800 transition cursor-pointer"
             >
               CLOSE
